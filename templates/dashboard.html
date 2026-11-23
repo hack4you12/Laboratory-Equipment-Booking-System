@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-1">{{ session.get('role')|title }} Dashboard</h2>
+    <p class="text-muted mb-0">Welcome, {{ session.get('name') }}.</p>
+  </div>
+  <span class="badge text-bg-primary">Phase 1 prototype</span>
+</div>
+
+<div class="mb-3">
+{% if session.get('role') == 'student' %}<a class="btn btn-primary" href="{{ url_for('bookings') }}">Request Equipment Booking</a>{% endif %}
+{% if session.get('role') == 'faculty' %}<a class="btn btn-primary" href="{{ url_for('approvals') }}">Review Booking Requests</a>{% endif %}
+{% if session.get('role') == 'admin' %}<a class="btn btn-primary" href="{{ url_for('utilization') }}">Utilization Report</a>{% endif %}
+</div>
+<div class="card mb-4">
+  <div class="card-body">
+    <h5>Equipment Catalogue</h5>
+    <p class="text-muted small">Browse equipment and check its current condition and status.</p>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead><tr><th>Equipment</th><th>Category</th><th>Condition</th><th>Status</th>{% if session.get('role') in ['assistant','admin'] %}<th>Update</th>{% endif %}</tr></thead>
+        <tbody>
+        {% for item in equipment %}
+          <tr>
+            <td>{{ item.name }}</td><td>{{ item.category }}</td><td>{{ item.condition }}</td>
+            <td><span class="badge {{ 'text-bg-success' if item.status == 'Available' else 'text-bg-warning' }}">{{ item.status }}</span></td>
+            {% if session.get('role') in ['assistant','admin'] %}
+            <td>
+              <form method="post" action="{{ url_for('update_equipment_status', equipment_id=item.id) }}" class="d-flex gap-1">
+                <select name="status" class="form-select form-select-sm">
+                  {% for s in ['Available','Under Maintenance','Out of Service'] %}<option {% if item.status == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+                </select>
+                <select name="condition" class="form-select form-select-sm">
+                  {% for c in ['Good','Needs inspection','Damaged'] %}<option {% if item.condition == c %}selected{% endif %}>{{ c }}</option>{% endfor %}
+                </select>
+                <button class="btn btn-sm btn-outline-primary">Save</button>
+              </form>
+            </td>
+            {% endif %}
+          </tr>
+        {% else %}
+          <tr><td colspan="5">No equipment added yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% if session.get('role') in ['assistant','admin'] %}
+<div class="card">
+  <div class="card-body">
+    <h5>Add Equipment</h5>
+    <form method="post" action="{{ url_for('add_equipment') }}" class="row g-2">
+      <div class="col-md-5"><input class="form-control" name="name" placeholder="Equipment name" required></div>
+      <div class="col-md-5"><input class="form-control" name="category" placeholder="Category" required></div>
+      <div class="col-md-2"><button class="btn btn-primary w-100">Add</button></div>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h3 class="mb-2">Welcome</h3>
+        <p class="text-muted">Sign in to the Laboratory Equipment Booking System.</p>
+        <form method="post">
+          <label class="form-label">Email</label>
+          <input class="form-control mb-3" type="email" name="email" required>
+          <label class="form-label">Password</label>
+          <input class="form-control mb-3" type="password" name="password" required>
+          <button class="btn btn-primary w-100">Login</button>
+        </form>
+        <hr>
+        <p class="small text-muted mb-1">Demo accounts (use the matching password):</p>
+        <div class="small">student@lab.com · Student@123</div>
+        <div class="small">faculty@lab.com · Faculty@123</div>
+        <div class="small">assistant@lab.com · Assistant@123</div>
+        <div class="small">admin@lab.com · Admin@123</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
